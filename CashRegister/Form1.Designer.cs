@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(cashRegister));
             this.titleLabel = new System.Windows.Forms.Label();
             this.burgerBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -289,8 +290,10 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.burgerBox);
             this.Controls.Add(this.titleLabel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "cashRegister";
             this.Text = "Cash Register";
+            this.Load += new System.EventHandler(this.cashRegister_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

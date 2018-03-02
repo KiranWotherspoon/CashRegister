@@ -1,6 +1,7 @@
 ﻿///Kiran Wotherspoon
 ///March 2, 2018
 ///Cash Register For a Fast Food Place
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +28,12 @@ namespace CashRegister
         int burgerNumber, friesNumber, drinkNumber = 0;
         double orderCost, taxTotal, totalCost, amountTendered, change = 0;
 
+        private void cashRegister_Load(object sender, EventArgs e)
+        {
+            SoundPlayer hello = new SoundPlayer(Properties.Resources.helloThere);
+            hello.Play();
+        }
+
         private void totalButton_Click(object sender, EventArgs e)
         {
             //setup graphics
@@ -39,6 +46,9 @@ namespace CashRegister
             
             try
             {
+                //set up sound
+                SoundPlayer caching = new SoundPlayer(Properties.Resources.caChingSound);
+
                 //read number of orders from text boxes
                 burgerNumber = Convert.ToInt16(burgerBox.Text);
                 friesNumber = Convert.ToInt16(fryBox.Text);
@@ -59,6 +69,7 @@ namespace CashRegister
 
                 else
                 {
+                    caching.Play();
                     //display numbers in respective labels
                     subTotalLabel.Text = orderCost.ToString("C");
                     taxLabel.Text = taxTotal.ToString("C");
@@ -95,7 +106,7 @@ namespace CashRegister
                 if (change < 0)
                 {
                     //check to see if customer has entered enough money
-                    receipt.DrawString("This is not enough money to pay for your \nmeal.\nPlease add more if you still wish buy this.", wordFont, wordBrush, 220, 50);
+                    receipt.DrawString("This is not enough money to pay for your \nmeal.\nPlease add more if you still wish buy these items.", wordFont, wordBrush, 220, 50);
                     Thread.Sleep(2000);
                     receipt.FillRectangle(receiptBrush, 213, 39, 274, 277);
                 }
@@ -119,57 +130,67 @@ namespace CashRegister
 
         private void billButton_Click(object sender, EventArgs e)
         {
-            //create some random numbers
-            Random rng = new Random();
-            int orderNumber = rng.Next(99,1000);
-            int day = rng.Next(1,31);
-            int year = rng.Next(1960, 2019);
-
-            //set up sound
-            SoundPlayer print = new SoundPlayer(Properties.Resources.printSound);
-            print.Play();
-
             //setup graphics
             Graphics receipt = this.CreateGraphics();
             SolidBrush receiptBrush = new SolidBrush(Color.White);
             SolidBrush wordBrush = new SolidBrush(Color.Black);
             Font titleFont = new Font("Verdana", 14, FontStyle.Bold);
             Font wordFont = new Font("Consolas", 10, FontStyle.Regular);
+            Font errorFont = new Font("Arial", 10, FontStyle.Regular);
 
-            //draw receipt
-            receipt.FillRectangle(receiptBrush, 213, 39, 274, 277);
-            receipt.DrawString("Macks Donald's", titleFont, wordBrush, 270, 40);
-            Thread.Sleep(200);
-            receipt.DrawString("Order #" + orderNumber, wordFont, wordBrush, 220, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\nMarch " + day + ", " + year, wordFont, wordBrush, 220, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\n\n\nHamburgers x" + burgerNumber, wordFont, wordBrush, 220, 80);
-            receipt.DrawString("\n\n\n@" + BURGERCOST, wordFont, wordBrush, 430, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\n\n\n\nFries x" + friesNumber, wordFont, wordBrush, 220, 80);
-            receipt.DrawString("\n\n\n\n@" + FRIESCOST, wordFont, wordBrush, 430, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\n\n\n\n\nDrinks x" + drinkNumber, wordFont, wordBrush, 220, 80);
-            receipt.DrawString("\n\n\n\n\n@" + DRINKCOST, wordFont, wordBrush, 430, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\n\n\n\n\n\n\nSubtotal", wordFont, wordBrush, 220, 80);
-            receipt.DrawString("\n\n\n\n\n\n\n" + orderCost.ToString("C"), wordFont, wordBrush, 430, 80);
-            Thread.Sleep(100);
-            print.Play();
-            receipt.DrawString("\n\n\n\n\n\n\n\nTax", wordFont, wordBrush, 220, 80);
-            receipt.DrawString("\n\n\n\n\n\n\n\n" + taxTotal.ToString("C"), wordFont, wordBrush, 430, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\n\n\n\n\n\n\n\n\nTotal", wordFont, wordBrush, 220, 80);
-            receipt.DrawString("\n\n\n\n\n\n\n\n\n" + totalCost.ToString("C"), wordFont, wordBrush, 430, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\nTendered", wordFont, wordBrush, 220, 80);
-            receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n" + amountTendered.ToString("C"), wordFont, wordBrush, 430, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\nChange", wordFont, wordBrush, 220, 80);
-            receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\n" + change.ToString("C"), wordFont, wordBrush, 430, 80);
-            Thread.Sleep(100);
-            receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\n\n\nHave a Nice Day!!", wordFont, wordBrush, 220, 80);
+            //set up sound
+            SoundPlayer print = new SoundPlayer(Properties.Resources.printSound);
+
+            if (totalCost <= 0)
+            {
+                receipt.DrawString("You must order something before\nyou print your receipt.", errorFont, wordBrush, 220, 50);
+                Thread.Sleep(1000);
+                receipt.FillRectangle(receiptBrush, 213, 39, 274, 277);
+            }
+            else
+            {
+                //create some random numbers
+                Random rng = new Random();
+                int orderNumber = rng.Next(99, 1000);
+                int day = rng.Next(1, 31);
+                int year = rng.Next(1960, 2019);
+
+                //draw receipt
+                print.Play();
+                receipt.FillRectangle(receiptBrush, 213, 39, 274, 277);
+                receipt.DrawString("Macks Donald's", titleFont, wordBrush, 270, 40);
+                Thread.Sleep(200);
+                receipt.DrawString("Order #" + orderNumber, wordFont, wordBrush, 220, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\nMarch " + day + ", " + year, wordFont, wordBrush, 220, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\n\n\nHamburgers x" + burgerNumber, wordFont, wordBrush, 220, 80);
+                receipt.DrawString("\n\n\n@" + BURGERCOST, wordFont, wordBrush, 430, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\n\n\n\nFries x" + friesNumber, wordFont, wordBrush, 220, 80);
+                receipt.DrawString("\n\n\n\n@" + FRIESCOST, wordFont, wordBrush, 430, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\n\n\n\n\nDrinks x" + drinkNumber, wordFont, wordBrush, 220, 80);
+                receipt.DrawString("\n\n\n\n\n@" + DRINKCOST, wordFont, wordBrush, 430, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\n\n\n\n\n\n\nSubtotal", wordFont, wordBrush, 220, 80);
+                receipt.DrawString("\n\n\n\n\n\n\n" + orderCost.ToString("C"), wordFont, wordBrush, 430, 80);
+                Thread.Sleep(100);
+                print.Play();
+                receipt.DrawString("\n\n\n\n\n\n\n\nTax", wordFont, wordBrush, 220, 80);
+                receipt.DrawString("\n\n\n\n\n\n\n\n" + taxTotal.ToString("C"), wordFont, wordBrush, 430, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\n\n\n\n\n\n\n\n\nTotal", wordFont, wordBrush, 220, 80);
+                receipt.DrawString("\n\n\n\n\n\n\n\n\n" + totalCost.ToString("C"), wordFont, wordBrush, 430, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\nTendered", wordFont, wordBrush, 220, 80);
+                receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n" + amountTendered.ToString("C"), wordFont, wordBrush, 430, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\nChange", wordFont, wordBrush, 220, 80);
+                receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\n" + change.ToString("C"), wordFont, wordBrush, 430, 80);
+                Thread.Sleep(100);
+                receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\n\n\nHave a Nice Day!!", wordFont, wordBrush, 220, 80);
+            }
         }
 
         private void newOrderButton_Click(object sender, EventArgs e)
@@ -195,9 +216,14 @@ namespace CashRegister
             fryBox.Text = "";
             drinkBox.Text = "";
             tenderedBox.Text = "";
+            Refresh();
             Graphics receipt = this.CreateGraphics();
             SolidBrush receiptBrush = new SolidBrush(Color.White);
             receipt.FillRectangle(receiptBrush, 213, 39, 274, 277);
+
+            Thread.Sleep(2000);
+            SoundPlayer hello = new SoundPlayer(Properties.Resources.helloThere);
+            hello.Play();
         }
 
         public cashRegister()

@@ -1,4 +1,7 @@
-﻿using System;
+﻿///Kiran Wotherspoon
+///March 2, 2018
+///Cash Register For a Fast Food Place
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;

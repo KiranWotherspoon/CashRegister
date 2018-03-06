@@ -50,9 +50,20 @@ namespace CashRegister
                 SoundPlayer caching = new SoundPlayer(Properties.Resources.caChingSound);
 
                 //read number of orders from text boxes
-                burgerNumber = Convert.ToInt16(burgerBox.Text);
-                friesNumber = Convert.ToInt16(fryBox.Text);
-                drinkNumber = Convert.ToInt16(drinkBox.Text);
+                if (burgerBox.Text == "")
+                    burgerNumber = 0;
+                else
+                    burgerNumber = Convert.ToInt16(burgerBox.Text);
+
+                if (fryBox.Text == "")
+                    friesNumber = 0;
+                else
+                    friesNumber = Convert.ToInt16(fryBox.Text);   
+                
+                if (drinkBox.Text == "")
+                    drinkNumber = 0;
+                else
+                    drinkNumber = Convert.ToInt16(drinkBox.Text);
 
                 //calculate subtotal, tax and total
                 orderCost = (burgerNumber * BURGERCOST) + (friesNumber * FRIESCOST) + (drinkNumber * DRINKCOST);
@@ -141,7 +152,7 @@ namespace CashRegister
             //set up sound
             SoundPlayer print = new SoundPlayer(Properties.Resources.printSound);
 
-            if (totalCost <= 0)
+            if (totalCost == 0)
             {
                 receipt.DrawString("You must order something before\nyou print your receipt.", errorFont, wordBrush, 220, 50);
                 Thread.Sleep(1000);
@@ -163,7 +174,7 @@ namespace CashRegister
                 receipt.DrawString("Order #" + orderNumber, wordFont, wordBrush, 220, 80);
                 Thread.Sleep(100);
                 receipt.DrawString("\nMarch " + day + ", " + year, wordFont, wordBrush, 220, 80);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 receipt.DrawString("\n\n\nHamburgers x" + burgerNumber, wordFont, wordBrush, 220, 80);
                 receipt.DrawString("\n\n\n@" + BURGERCOST, wordFont, wordBrush, 430, 80);
                 Thread.Sleep(100);
@@ -172,7 +183,7 @@ namespace CashRegister
                 Thread.Sleep(100);
                 receipt.DrawString("\n\n\n\n\nDrinks x" + drinkNumber, wordFont, wordBrush, 220, 80);
                 receipt.DrawString("\n\n\n\n\n@" + DRINKCOST, wordFont, wordBrush, 430, 80);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 receipt.DrawString("\n\n\n\n\n\n\nSubtotal", wordFont, wordBrush, 220, 80);
                 receipt.DrawString("\n\n\n\n\n\n\n" + orderCost.ToString("C"), wordFont, wordBrush, 430, 80);
                 Thread.Sleep(100);
@@ -182,13 +193,13 @@ namespace CashRegister
                 Thread.Sleep(100);
                 receipt.DrawString("\n\n\n\n\n\n\n\n\nTotal", wordFont, wordBrush, 220, 80);
                 receipt.DrawString("\n\n\n\n\n\n\n\n\n" + totalCost.ToString("C"), wordFont, wordBrush, 430, 80);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\nTendered", wordFont, wordBrush, 220, 80);
                 receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n" + amountTendered.ToString("C"), wordFont, wordBrush, 430, 80);
                 Thread.Sleep(100);
                 receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\nChange", wordFont, wordBrush, 220, 80);
                 receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\n" + change.ToString("C"), wordFont, wordBrush, 430, 80);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 receipt.DrawString("\n\n\n\n\n\n\n\n\n\n\n\n\n\nHave a Nice Day!!", wordFont, wordBrush, 220, 80);
             }
         }

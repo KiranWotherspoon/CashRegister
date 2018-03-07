@@ -30,6 +30,7 @@ namespace CashRegister
 
         private void cashRegister_Load(object sender, EventArgs e)
         {
+            //play hello sound
             SoundPlayer hello = new SoundPlayer(Properties.Resources.helloThere);
             hello.Play();
         }
@@ -70,9 +71,10 @@ namespace CashRegister
                 taxTotal = orderCost * TAX;
                 totalCost = orderCost + taxTotal;
 
+                //check if customer is actually ordering something
                 if (totalCost < 1)
                 {
-                    //check if customer is actually ordering something
+                    //display error message
                     receipt.DrawString("Please make sure you order something.", wordFont, wordBrush, 220, 50);
                     Thread.Sleep(2000);
                     receipt.FillRectangle(receiptBrush, 213, 39, 274, 277);
@@ -108,6 +110,7 @@ namespace CashRegister
             SolidBrush wordBrush = new SolidBrush(Color.Black);
             Font wordFont = new Font("Arial", 10, FontStyle.Regular);
             receipt.FillRectangle(receiptBrush, 213, 39, 274, 277);
+
             try
             {
                 //read number amount tendered and calculate change
@@ -152,8 +155,10 @@ namespace CashRegister
             //set up sound
             SoundPlayer print = new SoundPlayer(Properties.Resources.printSound);
 
+            //check if customer is actually ordering something
             if (totalCost == 0)
             {
+                //display error message
                 receipt.DrawString("You must order something before\nyou print your receipt.", errorFont, wordBrush, 220, 50);
                 Thread.Sleep(1000);
                 receipt.FillRectangle(receiptBrush, 213, 39, 274, 277);
